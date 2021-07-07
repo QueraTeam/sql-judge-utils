@@ -1,5 +1,10 @@
 # sql-judge-utils
 
+## Install
+```shell script
+pip install git+https://github.com/QueraTeam/sql-judge-utils
+```
+
 ----
 
 # Database 
