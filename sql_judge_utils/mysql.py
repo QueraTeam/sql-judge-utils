@@ -6,7 +6,7 @@ import mysql.connector
 class MysqlDatabase(Database):
     host = '127.0.0.1'
     port = '3306'
-    username = 'username'
+    username = 'root'
     password = 'password'
     db_name = None
 

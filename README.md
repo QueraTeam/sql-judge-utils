@@ -28,8 +28,11 @@ db2 = Database('db2')
 |---|---|---|
 | `host` | `'127.0.0.1'` | `'127.0.0.1'` |
 | `port` | `'5432'` | `'3306'` |
-| `username` | `'postgres'` | `'username'` |
+| `username` | `'postgres'` | `'root'` |
 | `password` | `None` | `'password'` |
+**⚠️ WARNING:**
+
+Dont change these properties in [QUERA](https://quera.ir) judge tests. These must be same default values 
 
 ### 3. Use utils:
 - Create database:
