@@ -26,10 +26,10 @@ db2 = Database('db2')
 ##### Optional arguments in database defining:
 | Option key | Postgresql default | Mysql default | 
 |---|---|---|
-| `host` | `'127.0.0.1'` | `'127.0.0.1'` |
+| `host` | `'postgresql'` | `'mysql'` |
 | `port` | `'5432'` | `'3306'` |
 | `username` | `'postgres'` | `'root'` |
-| `password` | `None` | `'password'` |
+| `password` | `None` | `None` |
 **⚠️ WARNING:**
 
 Dont change these properties in [QUERA](https://quera.ir) judge tests. These must be same default values 

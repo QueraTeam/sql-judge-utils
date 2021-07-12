@@ -5,7 +5,7 @@ from typing import List
 
 
 class PostgresqlDatabase(Database):
-    host = '127.0.0.1'
+    host = 'postgresql'
     port = '5432'
     username = 'postgres'
     password = None

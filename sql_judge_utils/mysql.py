@@ -4,10 +4,10 @@ import mysql.connector
 
 
 class MysqlDatabase(Database):
-    host = '127.0.0.1'
+    host = 'mysql'
     port = '3306'
     username = 'root'
-    password = 'password'
+    password = None
     db_name = None
 
     def connect(self):
