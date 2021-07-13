@@ -12,8 +12,9 @@ class PostgresqlDatabaseTests(unittest.TestCase):
         self.base_dir = os.path.dirname(__file__)
         self.initial_sql_file_path = os.path.join(self.base_dir, 'test_resources/initial_100340.sql')
 
-        self.db1 = PostgresqlDatabase('db1')
-        self.db2 = PostgresqlDatabase('db2')
+        options = dict(host='127.0.0.1')
+        self.db1 = PostgresqlDatabase('db1', **options)
+        self.db2 = PostgresqlDatabase('db2', **options)
 
     # def tearDown(self):
     #     self.db1.drop()
@@ -40,6 +41,26 @@ class PostgresqlDatabaseTests(unittest.TestCase):
             self.assertIsInstance(ex, psycopg2.OperationalError)
             self.assertEqual(str(ex), 'FATAL:  database "db1" does not exist\n')
             # raise ex
+
+    def test_init_and_run_count_query(self):
+        self.db1.drop()
+        print("create db1")
+        self.db1.create()
+        print("init db1")
+        with open(self.initial_sql_file_path) as f:
+            sql_string = f.read()
+        self.db1.init(sql_string)
+        _, tables = self.db1.get_public_table_names()
+        print(f"******* tables: {tables}")
+        # self.assertIsInstance(tables, list)
+        # self.assertEqual(len(tables), 2)
+        cols1, rows1 = self.db1.run_query("select count(*) from employees")
+        print(f"****** res1: \n{cols1}\n{rows1}")
+        self.assertEqual(rows1[0][0], 22)
+        # ===
+        cols2, rows2 = self.db1.run_query("select count(*) from teams")
+        print(f"****** res2: \n{cols2}\n{rows2}")
+        self.assertEqual(rows2[0][0], 10)
 
     def test_initf_and_run_count_query(self):
         self.db1.drop()
@@ -108,8 +129,9 @@ class MysqlDatabaseTests(unittest.TestCase):
         self.base_dir = os.path.dirname(__file__)
         self.initial_sql_file_path = os.path.join(self.base_dir, 'test_resources/initial_100340.sql')
 
-        self.db1 = MysqlDatabase('db1')
-        self.db2 = MysqlDatabase('db2')
+        options = dict(host='127.0.0.1', username='username', password='password')
+        self.db1 = MysqlDatabase('db1', **options)
+        self.db2 = MysqlDatabase('db2', **options)
 
     # def tearDown(self):
     #     self.db1.drop()
@@ -136,6 +158,26 @@ class MysqlDatabaseTests(unittest.TestCase):
             self.assertIsInstance(ex, ProgrammingError)
             self.assertTrue("Unknown database 'db1'" in str(ex))
             # raise ex
+
+    def test_init_and_run_count_query(self):
+        self.db1.drop()
+        print("create db1")
+        self.db1.create()
+        print("init db1")
+        with open(self.initial_sql_file_path) as f:
+            sql_string = f.read()
+        self.db1.init(sql_string)
+        _, tables = self.db1.get_public_table_names()
+        print(f"******* tables: {tables}")
+        # self.assertIsInstance(tables, list)
+        # self.assertEqual(len(tables), 2)
+        cols1, rows1 = self.db1.run_query("select count(*) from employees")
+        print(f"****** res1: \n{cols1}\n{rows1}")
+        self.assertEqual(rows1[0][0], 22)
+        # ===
+        cols2, rows2 = self.db1.run_query("select count(*) from teams")
+        print(f"****** res2: \n{cols2}\n{rows2}")
+        self.assertEqual(rows2[0][0], 10)
 
     def test_initf_and_run_count_query(self):
         self.db1.drop()

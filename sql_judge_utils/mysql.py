@@ -10,6 +10,19 @@ class MysqlDatabase(Database):
     password = None
     db_name = None
 
+    shell_command = 'mysql'
+    shell_execute_flag = '-e'
+
+    def get_shell_args(self):
+        shell_args = dict(
+            host=f'-h {self.host}',
+            port=f'-P {self.port}',
+            username=f'-u {self.username}',
+            password=f'--password={self.password}',
+            db_name=f'-D {self.db_name}'
+        )
+        return shell_args
+
     def connect(self):
         connection = mysql.connector.connect(
             user=self.username,
@@ -42,26 +55,6 @@ class MysqlDatabase(Database):
         sql = '''DROP DATABASE IF EXISTS %s''' % self.db_name
         cursor.execute(sql)
         conn.close()
-
-    def init(self, sql_string, separate=True):
-        conn = self.connect_to_db()
-        cursor = conn.cursor()
-        # TODO: double check this lines!
-        #  Split large sql because not work correctly in mysql
-        if separate:
-            for sql in sql_string.split(';'):
-                sql = ' '.join(sql.split())
-                # print(sql)
-                if sql:
-                    cursor.execute(sql)
-                    conn.commit()
-
-        else:
-            cursor.execute(sql_string)
-            conn.commit()
-
-        conn.close()
-        print("init successfully.")
 
     def run_query(self, sql_string) -> (List[str], List[List]):
         '''

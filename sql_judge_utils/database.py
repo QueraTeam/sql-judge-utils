@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 
@@ -7,12 +8,26 @@ class Database:
     username = None
     password = None
     db_name = None
+    # Fill in child classes
+    shell_command = None
+    shell_execute_flag = None
 
     def __init__(self, db_name, **kwargs):
         self.db_name = db_name
         for key in ['host', 'port', 'username', 'password']:
             if key in kwargs:
                 setattr(self, key, kwargs.get(key))
+
+    def get_shell_args(self):
+        # Fill in child classes
+        shell_args = dict(
+            host=f'-h {self.host}',
+            port=None,
+            username=None,
+            password=None,
+            db_name=None
+        )
+        return shell_args
 
     def connect(self):
         raise NotImplementedError
@@ -26,14 +41,25 @@ class Database:
     def drop(self):
         raise NotImplementedError
 
-    def init(self, sql_string):
-        raise NotImplementedError
+    def get_shell_args_string(self):
+        parts = []
+        for key, arg_str in self.get_shell_args().items():
+            if getattr(self, key) and arg_str:
+                parts.append(str(arg_str))
+        return ' '.join(parts)
+
+    def init(self, sql_string: str):
+        sql_string = " ".join(sql_string.split())
+        arg_string = self.get_shell_args_string()
+        command = f'{self.shell_command} {arg_string} {self.shell_execute_flag} "{sql_string}"'
+        print(command)
+        os.system(command)
 
     def initf(self, sql_file_path):
-        with open(sql_file_path, 'r') as f:
-            sql_sting = f.read()
-        # print(sql_sting)
-        self.init(sql_sting)
+        arg_string = self.get_shell_args_string()
+        command = f"cat {sql_file_path} | {self.shell_command} {arg_string}"
+        print(command)
+        os.system(command)
 
     def run_query(self, sql_string) -> (List[str], List[List]):
         '''
