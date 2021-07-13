@@ -1,2 +1,4 @@
 .idea/
 __pycache__/
+sql_judge_utils.egg-info/
+dist/
