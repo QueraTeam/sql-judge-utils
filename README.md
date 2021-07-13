@@ -1,4 +1,4 @@
-# sql-judge-utils
+# [sql-judge-utils](https://pypi.org/project/sql-judge-utils)
 
 Utils methods to write python unit tests for version 2 of [QUERA](https://quera.ir) sql judge system.
 
