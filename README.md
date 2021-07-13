@@ -52,7 +52,8 @@ db1.create()
 db1.drop()
 ```
 
-- Init data with sql string or sql file path:
+- Init data (run sql command without fetching results) 
+with sql string or sql file path:
 
 ```python
 db1.init(sql_string)
@@ -60,7 +61,7 @@ db1.init(sql_string)
 db1.initf(sql_file_path)
 ```
 
-- Run query
+- Run query with fetching results
 
 ```python
 col_names, records = db1.run_query(sql_string)
