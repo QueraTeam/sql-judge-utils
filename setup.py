@@ -11,11 +11,11 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='sql-judge-utils',
-    version='0.1.5',
+    version='0.1.6',
     packages=find_packages(
-        exclude=(
-            'tests'
-        )
+        exclude=[
+            'tests',
+        ]
     ),
     include_package_data=True,
     description='A reusable python package for problem design and judge of quera sql problems',
