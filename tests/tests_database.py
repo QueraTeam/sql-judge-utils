@@ -12,7 +12,7 @@ class PostgresqlDatabaseTests(unittest.TestCase):
         self.base_dir = os.path.dirname(__file__)
         self.initial_sql_file_path = os.path.join(self.base_dir, 'test_resources/initial_100340.sql')
 
-        options = dict(host='127.0.0.1')
+        options = dict(host='127.0.0.1', username="postgres")
         self.db1 = PostgresqlDatabase('db1', **options)
         self.db2 = PostgresqlDatabase('db2', **options)
 

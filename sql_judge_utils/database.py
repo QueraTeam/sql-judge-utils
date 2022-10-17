@@ -1,5 +1,7 @@
 import os
+from tempfile import NamedTemporaryFile
 from typing import List
+from sql_judge_utils.validator import validate_db_argument
 
 
 class Database:
@@ -13,10 +15,10 @@ class Database:
     shell_execute_flag = None
 
     def __init__(self, db_name, **kwargs):
-        self.db_name = db_name
+        self.db_name = validate_db_argument("db_name", db_name)
         for key in ['host', 'port', 'username', 'password']:
             if key in kwargs:
-                setattr(self, key, kwargs.get(key))
+                setattr(self, key, validate_db_argument(key, kwargs.get(key)))
 
     def get_shell_args(self):
         # Fill in child classes
@@ -49,17 +51,20 @@ class Database:
         return ' '.join(parts)
 
     def init(self, sql_string: str):
-        sql_string = " ".join(sql_string.split())
-        arg_string = self.get_shell_args_string()
-        command = f'{self.shell_command} {arg_string} {self.shell_execute_flag} "{sql_string}"'
-        print(command)
-        os.system(command)
+        file = NamedTemporaryFile(delete=False)
+        file.write(sql_string.encode("utf-8"))
+        file.close()
+        self.initf(file.name, delete_file=True)
 
-    def initf(self, sql_file_path):
+    def initf(self, sql_file_path, delete_file=False):
+        if not os.path.exists(sql_file_path):
+            raise Exception(f"SQL file not found: {sql_file_path}")
         arg_string = self.get_shell_args_string()
-        command = f"cat {sql_file_path} | {self.shell_command} {arg_string}"
+        command = f"cat '{sql_file_path}' | {self.shell_command} {arg_string}"
         print(command)
         os.system(command)
+        if delete_file:
+            os.system(f"rm '{sql_file_path}'")
 
     def run_query(self, sql_string) -> (List[str], List[List]):
         '''
