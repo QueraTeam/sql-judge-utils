@@ -11,7 +11,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='sql-judge-utils',
-    version='0.1.7',
+    version='0.1.8',
     packages=find_packages(
         include=(
             "sql_judge_utils",
