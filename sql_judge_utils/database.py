@@ -60,7 +60,7 @@ class Database:
         if delete_file:
             os.system(f"rm '{sql_file_path}'")
 
-    def run_query(self, sql_string) -> (list[str], list[list]):
+    def run_query(self, sql_string) -> tuple[list[str], list[list]]:
         """
 
         :param sql_string:
@@ -102,7 +102,7 @@ class Database:
                     return False, message
         return status, message
 
-    def is_equal_on_table(self, db2, table_name) -> (bool, str):
+    def is_equal_on_table(self, db2, table_name) -> tuple[bool, str]:
         first_col_names, first_records = self.run_query(f"SELECT * from {table_name}")
         second_col_names, second_records = db2.run_query(f"SELECT * from {table_name}")
         status, message = self.compare_query_result(first_col_names, first_records, second_col_names, second_records)

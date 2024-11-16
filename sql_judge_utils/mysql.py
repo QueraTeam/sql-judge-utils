@@ -47,7 +47,7 @@ class MysqlDatabase(Database):
         cursor.execute(sql)
         conn.close()
 
-    def run_query(self, sql_string) -> (list[str], list[list]):
+    def run_query(self, sql_string) -> tuple[list[str], list[list]]:
         """
 
         :param sql_string:
@@ -67,7 +67,7 @@ class MysqlDatabase(Database):
 
         return col_names, records
 
-    def get_public_table_names(self):
+    def get_public_table_names(self) -> list[str]:
         sql = "show tables"
         _, records = self.run_query(sql)
         table_names = []

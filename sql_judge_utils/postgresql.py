@@ -70,7 +70,7 @@ class PostgresqlDatabase(Database):
 
         return col_names, records
 
-    def get_public_table_names(self):
+    def get_public_table_names(self) -> list[str]:
         sql = "select table_name from information_schema.tables where table_schema='public'"
         _, records = self.run_query(sql)
         table_names = []
