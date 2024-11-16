@@ -39,10 +39,8 @@ def test_drop(db1):
     try:
         db1.connect_to_db()
     except Exception as ex:
-        # print(ex)
         assert isinstance(ex, psycopg2.OperationalError)
-        assert str(ex) == 'FATAL:  database "db1" does not exist\n'
-        # raise ex
+        assert 'FATAL:  database "db1" does not exist' in str(ex)
 
 
 def test_init_and_run_count_query(db1):
@@ -53,7 +51,7 @@ def test_init_and_run_count_query(db1):
     with open(initial_sql_file_path) as f:
         sql_string = f.read()
     db1.init(sql_string)
-    _, tables = db1.get_public_table_names()
+    tables = db1.get_public_table_names()
     print(f"******* tables: {tables}")
     cols1, rows1 = db1.run_query("select count(*) from employees")
     print(f"****** res1: \n{cols1}\n{rows1}")
