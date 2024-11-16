@@ -18,7 +18,7 @@ def check_space_not_allowed(value):
 
 VALIDATORS = {
     "host": check_hostname,
-    "port": lambda port: isinstance(port, int) or isinstance(port, str) and port.isdigit(),
+    "port": lambda port: isinstance(port, int) or (isinstance(port, str) and port.isdigit()),
     "username": lambda username: bool(re.compile("^[A-Za-z0-9]{1,64}$").match(username)),
     "password": check_space_not_allowed,
     "db_name": check_space_not_allowed,
