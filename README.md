@@ -1,59 +1,59 @@
-# [sql-judge-utils](https://pypi.org/project/sql-judge-utils)
+# sql-judge-utils
 
-Utils methods to write python unit tests for version 2 of [QUERA](https://quera.ir) sql judge system.
+Utilities for writing Python unit tests for version 2 of the [Quera](https://quera.ir) SQL judge.
 
-## Install
+## Installation
 
-```shell script
+```shell
 pip install sql-judge-utils # or git+https://github.com/QueraTeam/sql-judge-utils
 ```
 
----
+## Usage
 
-# Database 
-### 1. Import one of database classes
-- Postgresql:
+Import one of database classes:
+
 ```python
+# PostgreSQL:
 from sql_judge_utils.postgresql import PostgresqlDatabase as Database
-```
-- Mysql:
-```python
+
+# MySQL:
 from sql_judge_utils.mysql import MysqlDatabase as Database
 ```
 
-### 2. Define database instances:
+Define database instances:
 
 ```python
-db1 = Database('db1')
-db2 = Database('db2')
+db1 = Database("db1")
+db2 = Database("db2")
 ```
 
-##### Optional arguments in database defining:
-| Option key | Postgresql default | Mysql default | 
-|---|---|---|
-| `host` | `'postgresql'` | `'mysql'` |
-| `port` | `'5432'` | `'3306'` |
-| `username` | `'postgres'` | `'root'` |
-| `password` | `None` | `None` |
+Optional arguments:
 
-**WARNING:**
-Dont change these properties in [QUERA](https://quera.ir) judge tests. These must be same default values 
+| Argument   | PostgreSQL default | MySQL default |
+| ---------- | ------------------ | ------------- |
+| `host`     | `"postgresql"`     | `"mysql"`     |
+| `port`     | `5432`             | `3306`        |
+| `username` | `"postgres"`       | `"root"`      |
+| `password` | `None`             | `None`        |
 
-### 3. Use utils:
-- Create database:
+> **WARNING:**
+> Don't override the default values
+> if you're writing tests for [Quera](https://quera.ir) SQL judge.
+
+Create database:
 
 ```python
 db1.create()
 ```
 
-- Drop database:
+Drop database:
 
 ```python
 db1.drop()
 ```
 
-- Init data (run sql command without fetching results) 
-with sql string or sql file path:
+Init data (run SQL command without fetching results)
+with SQL string or SQL file path:
 
 ```python
 db1.init(sql_string)
@@ -61,33 +61,35 @@ db1.init(sql_string)
 db1.initf(sql_file_path)
 ```
 
-- Run query with fetching results
+Run query and fetch the results:
 
 ```python
 col_names, records = db1.run_query(sql_string)
 ```
 
-- Compare two result of run_query:
+Compare two result of run_query:
 
 ```python
 status, message = Database.compare_query_result(col_names_1, records_1, col_names_2, records_2)
 ```
 
-- Compare two database instances:
+Compare two database instances:
 
 ```python
 status, message = db1.is_equal(db2)
 ```
 
-- Compare two database instances on a table:
+Compare two database instances on a table:
 
 ```python
 status, message = db1.is_equal_on_table(db2, table_name)
 ```
 
----
 
-# SQL parser to find submission queries
+
+### Submission parser
+
+Use the parser to extract queries from a submission file:
 
 ```python
 from sql_judge_utils.parser import get_queries, get_query
@@ -99,4 +101,27 @@ query_number = 2
 query = get_query(submission_file_path, query_number)
 ```
 
---- 
+## Development
+
+Install Hatch and pre-commit hooks:
+
+```shell
+pipx install hatch
+pipx install pre-commit
+pre-commit install
+```
+
+Before running the tests, start a MySQL and a PostgreSQL instance:
+
+```shell
+docker run --name sql-postgres -e POSTGRES_PASSWORD=password -p "127.0.0.1:15432:5432" -d postgres postgres -c log_statement=all
+docker run --name sql-mysql -e MYSQL_ROOT_PASSWORD=password -p "127.0.0.1:13306:3306" -d mysql
+```
+
+Run the tests and stop the database instances:
+
+```shell
+hatch test
+docker stop sql-postgres sql-mysql
+docker rm sql-postgres sql-mysql
+```
