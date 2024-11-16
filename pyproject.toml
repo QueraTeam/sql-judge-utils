@@ -1,3 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sql-judge-utils"
+dynamic = ["version"]
+description = "Utilities for writing tests for Quera SQL judge."
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Quera", email = "info@quera.ir" },
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+]
+dependencies = [
+    "mysql-connector-python>=8.0.25",
+    "psycopg2>=2.9.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/QueraTeam/sql-judge-utils"
+
+[tool.hatch.version]
+path = "sql_judge_utils/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/sql_judge_utils",
+]
+
 [tool.black]
 line-length = 120
 include = '\.pyi?$'
