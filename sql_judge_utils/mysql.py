@@ -13,7 +13,7 @@ class MysqlDatabase(Database):
         username: str = "root",
         password: str = None,
     ):
-        super.__init__(db_name, host=host, port=port, username=username, password=password)
+        super().__init__(db_name, host=host, port=port, username=username, password=password)
 
     def connect(self):
         connection = mysql.connector.connect(user=self.username, password=self.password, host=self.host, port=self.port)

@@ -14,7 +14,7 @@ class PostgresqlDatabase(Database):
         username: str = "postgres",
         password: str = None,
     ):
-        super.__init__(db_name, host=host, port=port, username=username, password=password)
+        super().__init__(db_name, host=host, port=port, username=username, password=password)
 
     def connect(self):
         connection = psycopg2.connect(user=self.username, password=self.password, host=self.host, port=self.port)
