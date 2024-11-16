@@ -28,17 +28,21 @@ class MysqlDatabase(Database):
 
     def create(self):
         conn = self.connect()
-        cursor = conn.cursor()
-        sql = f"""CREATE DATABASE {self.db_name}"""
-        cursor.execute(sql)
-        conn.close()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(f"CREATE DATABASE {self.db_name}")
+            cursor.close()
+        finally:
+            conn.close()
 
     def drop(self):
         conn = self.connect()
-        cursor = conn.cursor()
-        sql = f"""DROP DATABASE IF EXISTS {self.db_name}"""
-        cursor.execute(sql)
-        conn.close()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(f"DROP DATABASE IF EXISTS {self.db_name}")
+            cursor.close()
+        finally:
+            conn.close()
 
     def init(self, sql_string: str):
         conn = self.connect_to_db()
@@ -60,16 +64,19 @@ class MysqlDatabase(Database):
             col_names
             records
         """
-        col_names, records = [], []
-
         conn = self.connect_to_db()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute(sql_string)
-        results = cursor.fetchall()
+        try:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(sql_string)
+            results = cursor.fetchall()
+            cursor.close()
+        finally:
+            conn.close()
+
+        col_names, records = [], []
         if results:
             col_names = list(results[0].keys())
             records = [list(row.values()) for row in results]
-
         return col_names, records
 
     def get_public_table_names(self) -> list[str]:

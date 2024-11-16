@@ -1,5 +1,6 @@
 import psycopg2
 from psycopg2 import extras
+from psycopg2.sql import SQL, Identifier
 
 from sql_judge_utils.database import Database
 
@@ -22,25 +23,29 @@ class PostgresqlDatabase(Database):
 
     def connect_to_db(self):
         connection = psycopg2.connect(
-            database=self.db_name, user=self.username, password=self.password, host=self.host, port=self.port
+            dbname=self.db_name, user=self.username, password=self.password, host=self.host, port=self.port
         )
         return connection
 
     def create(self):
         conn = self.connect()
         conn.autocommit = True
-        cursor = conn.cursor()
-        sql = f"""CREATE DATABASE {self.db_name}"""
-        cursor.execute(sql)
-        conn.close()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(SQL("CREATE DATABASE {}").format(Identifier(self.db_name)))
+            cursor.close()
+        finally:
+            conn.close()
 
     def drop(self):
         conn = self.connect()
         conn.autocommit = True
-        cursor = conn.cursor()
-        sql = f"""DROP DATABASE IF EXISTS {self.db_name}"""
-        cursor.execute(sql)
-        conn.close()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(SQL("DROP DATABASE IF EXISTS {}").format(Identifier(self.db_name)))
+            cursor.close()
+        finally:
+            conn.close()
 
     def init(self, sql_string: str):
         conn = self.connect_to_db()
@@ -62,14 +67,18 @@ class PostgresqlDatabase(Database):
         """
         conn = self.connect_to_db()
         conn.autocommit = True
-        cursor = conn.cursor(cursor_factory=extras.RealDictCursor)
-        cursor.execute(sql_string)
-        results = cursor.fetchall()
+        try:
+            cursor = conn.cursor(cursor_factory=extras.RealDictCursor)
+            cursor.execute(sql_string)
+            results = cursor.fetchall()
+            cursor.close()
+        finally:
+            conn.close()
+
         col_names, records = [], []
         if results:
             col_names = list(results[0].keys())
             records = [list(row.values()) for row in results]
-
         return col_names, records
 
     def get_public_table_names(self) -> list[str]:
