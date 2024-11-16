@@ -1,4 +1,5 @@
 import mysql.connector
+import sqlparse
 
 from sql_judge_utils.database import Database
 
@@ -38,6 +39,18 @@ class MysqlDatabase(Database):
         sql = f"""DROP DATABASE IF EXISTS {self.db_name}"""
         cursor.execute(sql)
         conn.close()
+
+    def init(self, sql_string: str):
+        conn = self.connect_to_db()
+        try:
+            cursor = conn.cursor()
+            # In MySQL we can't execute multiple statements in one go.
+            for statement in sqlparse.split(sql_string):
+                cursor.execute(statement)
+            conn.commit()
+            cursor.close()
+        finally:
+            conn.close()
 
     def run_query(self, sql_string) -> tuple[list[str], list[list]]:
         """

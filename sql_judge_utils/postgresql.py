@@ -42,6 +42,16 @@ class PostgresqlDatabase(Database):
         cursor.execute(sql)
         conn.close()
 
+    def init(self, sql_string: str):
+        conn = self.connect_to_db()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql_string)
+            conn.commit()
+            cursor.close()
+        finally:
+            conn.close()
+
     def run_query(self, sql_string) -> tuple[list[str], list[list]]:
         """
 

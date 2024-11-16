@@ -32,14 +32,7 @@ class Database:
         raise NotImplementedError
 
     def init(self, sql_string: str):
-        try:
-            conn = self.connect_to_db()
-            cursor = conn.cursor()
-            cursor.execute(sql_string)
-            conn.commit()
-        finally:
-            cursor.close()
-            conn.close()
+        raise NotImplementedError
 
     def initf(self, sql_file_path, delete_file=False):
         if not os.path.exists(sql_file_path):
