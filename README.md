@@ -125,3 +125,10 @@ hatch test
 docker stop sql-postgres sql-mysql
 docker rm sql-postgres sql-mysql
 ```
+
+Build and publish:
+
+```shell
+hatch build
+hatch publish
+```
