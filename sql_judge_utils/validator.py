@@ -8,18 +8,18 @@ def check_hostname(hostname):
         return False
     if hostname[-1] == ".":
         hostname = hostname[:-1]  # strip exactly one dot from the right, if present
-    allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
+    allowed = re.compile(r"(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
     return all(allowed.match(x) for x in hostname.split("."))
 
 
 def check_space_not_allowed(value):
-    return bool(re.compile('^[A-Za-z0-9]{1,64}$').match(value))
+    return bool(re.compile("^[A-Za-z0-9]{1,64}$").match(value))
 
 
 VALIDATORS = {
     "host": check_hostname,
     "port": lambda port: isinstance(port, int) or isinstance(port, str) and port.isdigit(),
-    "username": lambda username: bool(re.compile('^[A-Za-z0-9]{1,64}$').match(username)),
+    "username": lambda username: bool(re.compile("^[A-Za-z0-9]{1,64}$").match(username)),
     "password": check_space_not_allowed,
     "db_name": check_space_not_allowed,
 }

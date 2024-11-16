@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 120
+skip_gitignore = true
+
+[tool.autoflake]
+in-place = true
+expand-star-imports = true
+remove-duplicate-keys = true
+remove-unused-variables = true
+remove-all-unused-imports = true

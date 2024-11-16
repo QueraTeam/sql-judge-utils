@@ -1,7 +1,9 @@
 import os
 import unittest
+
 import psycopg2
 from mysql.connector import ProgrammingError
+
 from sql_judge_utils.mysql import MysqlDatabase
 from sql_judge_utils.postgresql import PostgresqlDatabase
 
@@ -10,11 +12,11 @@ class PostgresqlDatabaseTests(unittest.TestCase):
 
     def setUp(self):
         self.base_dir = os.path.dirname(__file__)
-        self.initial_sql_file_path = os.path.join(self.base_dir, 'test_resources/initial_100340.sql')
+        self.initial_sql_file_path = os.path.join(self.base_dir, "test_resources/initial_100340.sql")
 
-        options = dict(host='127.0.0.1', username="postgres")
-        self.db1 = PostgresqlDatabase('db1', **options)
-        self.db2 = PostgresqlDatabase('db2', **options)
+        options = dict(host="127.0.0.1", username="postgres")
+        self.db1 = PostgresqlDatabase("db1", **options)
+        self.db2 = PostgresqlDatabase("db2", **options)
 
     # def tearDown(self):
     #     self.db1.drop()
@@ -89,19 +91,19 @@ class PostgresqlDatabaseTests(unittest.TestCase):
         cols1, rows1 = self.db1.run_query("select * from employees")
         print(f"****** res1: \n{cols1}\n{rows1}")
         self.assertEqual(len(rows1), 22)
-        for i, t in enumerate(['id', 'name', 'salary', 'team_id']):
+        for i, t in enumerate(["id", "name", "salary", "team_id"]):
             self.assertEqual(cols1[i], t)
         rec5 = rows1[4]
-        for i, v in enumerate([5, 'andersson', 40000, 1]):
+        for i, v in enumerate([5, "andersson", 40000, 1]):
             self.assertEqual(rec5[i], v)
         # ===
         cols2, rows2 = self.db1.run_query("select * from teams")
         print(f"****** res2: \n{cols2}\n{rows2}")
         self.assertEqual(len(rows2), 10)
-        for i, t in enumerate(['id', 'name']):
+        for i, t in enumerate(["id", "name"]):
             self.assertEqual(cols2[i], t)
         rec5 = rows2[4]
-        for i, v in enumerate([5, 'app']):
+        for i, v in enumerate([5, "app"]):
             self.assertEqual(rec5[i], v)
 
     def test_initf_in_two_db_and_compare_them(self):
@@ -119,7 +121,7 @@ class PostgresqlDatabaseTests(unittest.TestCase):
         # ===
         print("compare db1 and db2")
         status, message = self.db1.is_equal(self.db2)
-        self.assertEqual(message, '')
+        self.assertEqual(message, "")
         self.assertTrue(status)
 
 
@@ -127,11 +129,11 @@ class MysqlDatabaseTests(unittest.TestCase):
 
     def setUp(self):
         self.base_dir = os.path.dirname(__file__)
-        self.initial_sql_file_path = os.path.join(self.base_dir, 'test_resources/initial_100340.sql')
+        self.initial_sql_file_path = os.path.join(self.base_dir, "test_resources/initial_100340.sql")
 
-        options = dict(host='127.0.0.1', username='username', password='password')
-        self.db1 = MysqlDatabase('db1', **options)
-        self.db2 = MysqlDatabase('db2', **options)
+        options = dict(host="127.0.0.1", username="username", password="password")
+        self.db1 = MysqlDatabase("db1", **options)
+        self.db2 = MysqlDatabase("db2", **options)
 
     # def tearDown(self):
     #     self.db1.drop()
@@ -206,19 +208,19 @@ class MysqlDatabaseTests(unittest.TestCase):
         cols1, rows1 = self.db1.run_query("select * from employees")
         print(f"****** res1: \n{cols1}\n{rows1}")
         self.assertEqual(len(rows1), 22)
-        for i, t in enumerate(['id', 'name', 'salary', 'team_id']):
+        for i, t in enumerate(["id", "name", "salary", "team_id"]):
             self.assertEqual(cols1[i], t)
         rec5 = rows1[4]
-        for i, v in enumerate([5, 'andersson', 40000, 1]):
+        for i, v in enumerate([5, "andersson", 40000, 1]):
             self.assertEqual(rec5[i], v)
         # ===
         cols2, rows2 = self.db1.run_query("select * from teams")
         print(f"****** res2: \n{cols2}\n{rows2}")
         self.assertEqual(len(rows2), 10)
-        for i, t in enumerate(['id', 'name']):
+        for i, t in enumerate(["id", "name"]):
             self.assertEqual(cols2[i], t)
         rec5 = rows2[4]
-        for i, v in enumerate([5, 'app']):
+        for i, v in enumerate([5, "app"]):
             self.assertEqual(rec5[i], v)
 
     def test_initf_in_two_db_and_compare_them(self):
@@ -236,9 +238,9 @@ class MysqlDatabaseTests(unittest.TestCase):
         # ===
         print("compare db1 and db2")
         status, message = self.db1.is_equal(self.db2)
-        self.assertEqual(message, '')
+        self.assertEqual(message, "")
         self.assertTrue(status)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
