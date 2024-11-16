@@ -5,14 +5,19 @@ from sql_judge_utils.database import Database
 
 
 class PostgresqlDatabase(Database):
-    host = "postgresql"
-    port = "5432"
-    username = "postgres"
-    password = None
-    db_name = None
-
     shell_command = "psql"
     shell_execute_flag = "-c"
+
+    def __init__(
+        self,
+        db_name: str,
+        *,
+        host: str = "postgresql",
+        port: int | str = 5432,
+        username: str = "postgres",
+        password: str = None,
+    ):
+        super.__init__(db_name, host=host, port=port, username=username, password=password)
 
     def get_shell_args(self):
         shell_args = dict(
@@ -50,7 +55,7 @@ class PostgresqlDatabase(Database):
         cursor.execute(sql)
         conn.close()
 
-    def run_query(self, sql_string) -> (list[str], list[list]):
+    def run_query(self, sql_string) -> tuple[list[str], list[list]]:
         """
 
         :param sql_string:

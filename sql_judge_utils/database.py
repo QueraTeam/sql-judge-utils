@@ -5,20 +5,24 @@ from sql_judge_utils.validator import validate_db_argument
 
 
 class Database:
-    host = "127.0.0.1"
-    port = None
-    username = None
-    password = None
-    db_name = None
     # Fill in child classes
     shell_command = None
     shell_execute_flag = None
 
-    def __init__(self, db_name, **kwargs):
+    def __init__(
+        self,
+        db_name: str,
+        *,
+        host: str = "127.0.0.1",
+        port: int | str = None,
+        username: str = None,
+        password: str = None,
+    ):
         self.db_name = validate_db_argument("db_name", db_name)
-        for key in ["host", "port", "username", "password"]:
-            if key in kwargs:
-                setattr(self, key, validate_db_argument(key, kwargs.get(key)))
+        self.host = validate_db_argument("host", host)
+        self.port = validate_db_argument("port", port)
+        self.username = validate_db_argument("username", username)
+        self.password = validate_db_argument("password", password)
 
     def get_shell_args(self):
         # Fill in child classes

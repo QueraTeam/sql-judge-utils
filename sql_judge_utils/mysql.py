@@ -4,14 +4,19 @@ from sql_judge_utils.database import Database
 
 
 class MysqlDatabase(Database):
-    host = "mysql"
-    port = "3306"
-    username = "root"
-    password = None
-    db_name = None
-
     shell_command = "mysql"
     shell_execute_flag = "-e"
+
+    def __init__(
+        self,
+        db_name: str,
+        *,
+        host: str = "mysql",
+        port: int | str = 3306,
+        username: str = "root",
+        password: str = None,
+    ):
+        super.__init__(db_name, host=host, port=port, username=username, password=password)
 
     def get_shell_args(self):
         shell_args = dict(
