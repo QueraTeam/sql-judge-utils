@@ -1,14 +1,9 @@
 import os
-from tempfile import NamedTemporaryFile
 
 from sql_judge_utils.validator import validate_db_argument
 
 
 class Database:
-    # Fill in child classes
-    shell_command = None
-    shell_execute_flag = None
-
     def __init__(
         self,
         db_name: str,
@@ -24,11 +19,6 @@ class Database:
         self.username = validate_db_argument("username", username)
         self.password = validate_db_argument("password", password)
 
-    def get_shell_args(self):
-        # Fill in child classes
-        shell_args = dict(host=f"-h {self.host}", port=None, username=None, password=None, db_name=None)
-        return shell_args
-
     def connect(self):
         raise NotImplementedError
 
@@ -41,28 +31,22 @@ class Database:
     def drop(self):
         raise NotImplementedError
 
-    def get_shell_args_string(self):
-        parts = []
-        for key, arg_str in self.get_shell_args().items():
-            if getattr(self, key) and arg_str:
-                parts.append(str(arg_str))
-        return " ".join(parts)
-
     def init(self, sql_string: str):
-        file = NamedTemporaryFile(delete=False)
-        file.write(sql_string.encode("utf-8"))
-        file.close()
-        self.initf(file.name, delete_file=True)
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute(sql_string)
+        conn.commit()
+        cursor.close()
+        conn.close()
 
     def initf(self, sql_file_path, delete_file=False):
         if not os.path.exists(sql_file_path):
             raise Exception(f"SQL file not found: {sql_file_path}")
-        arg_string = self.get_shell_args_string()
-        command = f"cat '{sql_file_path}' | {self.shell_command} {arg_string}"
-        print(command)
-        os.system(command)
+        with open(sql_file_path) as f:
+            sql_string = f.read()
+        self.init(sql_string)
         if delete_file:
-            os.system(f"rm '{sql_file_path}'")
+            os.unlink(sql_file_path)
 
     def run_query(self, sql_string) -> tuple[list[str], list[list]]:
         """

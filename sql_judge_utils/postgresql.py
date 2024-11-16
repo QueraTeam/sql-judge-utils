@@ -5,9 +5,6 @@ from sql_judge_utils.database import Database
 
 
 class PostgresqlDatabase(Database):
-    shell_command = "psql"
-    shell_execute_flag = "-c"
-
     def __init__(
         self,
         db_name: str,
@@ -18,16 +15,6 @@ class PostgresqlDatabase(Database):
         password: str = None,
     ):
         super.__init__(db_name, host=host, port=port, username=username, password=password)
-
-    def get_shell_args(self):
-        shell_args = dict(
-            host=f"-h {self.host}",
-            port=f"-p {self.port}",
-            username=f"-U {self.username}",
-            password=f"-W {self.password}",  # TODO: CHECK ME!
-            db_name=f"-d {self.db_name}",
-        )
-        return shell_args
 
     def connect(self):
         connection = psycopg2.connect(user=self.username, password=self.password, host=self.host, port=self.port)

@@ -4,9 +4,6 @@ from sql_judge_utils.database import Database
 
 
 class MysqlDatabase(Database):
-    shell_command = "mysql"
-    shell_execute_flag = "-e"
-
     def __init__(
         self,
         db_name: str,
@@ -17,16 +14,6 @@ class MysqlDatabase(Database):
         password: str = None,
     ):
         super.__init__(db_name, host=host, port=port, username=username, password=password)
-
-    def get_shell_args(self):
-        shell_args = dict(
-            host=f"-h {self.host}",
-            port=f"-P {self.port}",
-            username=f"-u {self.username}",
-            password=f"--password={self.password}",
-            db_name=f"-D {self.db_name}",
-        )
-        return shell_args
 
     def connect(self):
         connection = mysql.connector.connect(user=self.username, password=self.password, host=self.host, port=self.port)
