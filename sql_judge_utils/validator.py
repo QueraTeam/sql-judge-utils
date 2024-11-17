@@ -20,7 +20,7 @@ VALIDATORS = {
     "host": check_hostname,
     "port": lambda port: isinstance(port, int) or (isinstance(port, str) and port.isdigit()),
     "username": lambda username: bool(re.compile("^[A-Za-z0-9]{1,64}$").match(username)),
-    "password": check_space_not_allowed,
+    "password": lambda password: password is None or check_space_not_allowed(password),
     "db_name": check_space_not_allowed,
 }
 
