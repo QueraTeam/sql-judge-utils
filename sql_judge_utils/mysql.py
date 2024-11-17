@@ -1,3 +1,5 @@
+from typing import Union
+
 import mysql.connector
 import sqlparse
 
@@ -10,7 +12,7 @@ class MysqlDatabase(Database):
         db_name: str,
         *,
         host: str = "mysql",
-        port: int | str = 3306,
+        port: Union[int, str] = 3306,
         username: str = "root",
         password: str = None,
     ):

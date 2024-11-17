@@ -1,3 +1,5 @@
+from typing import Union
+
 import psycopg2
 from psycopg2 import extras
 from psycopg2.sql import SQL, Identifier
@@ -11,7 +13,7 @@ class PostgresqlDatabase(Database):
         db_name: str,
         *,
         host: str = "postgresql",
-        port: int | str = 5432,
+        port: Union[int, str] = 5432,
         username: str = "postgres",
         password: str = None,
     ):

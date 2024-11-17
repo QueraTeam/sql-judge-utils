@@ -1,4 +1,5 @@
 import os
+from typing import Union
 
 from sql_judge_utils.validator import validate_db_argument
 
@@ -9,7 +10,7 @@ class Database:
         db_name: str,
         *,
         host: str = "127.0.0.1",
-        port: int | str = None,
+        port: Union[int, str] = None,
         username: str = None,
         password: str = None,
     ):
