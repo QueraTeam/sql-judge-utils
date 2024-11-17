@@ -23,6 +23,15 @@ def db2():
     db.drop()
 
 
+def test_initialize():
+    db = PostgresqlDatabase("db1")
+    assert db.db_name == "db1"
+    assert db.host == "postgresql"
+    assert db.port == 5432
+    assert db.username == "postgres"
+    assert db.password == None
+
+
 def test_create(db1):
     db1.drop()
     print("create db1")

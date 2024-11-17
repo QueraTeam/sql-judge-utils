@@ -23,6 +23,15 @@ def db2():
     db.drop()
 
 
+def test_initialize():
+    db = MysqlDatabase("db1")
+    assert db.db_name == "db1"
+    assert db.host == "mysql"
+    assert db.port == 3306
+    assert db.username == "root"
+    assert db.password == None
+
+
 def test_create(db1):
     db1.drop()
     print("create db1")
