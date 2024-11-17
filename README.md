@@ -121,7 +121,7 @@ docker run --name sql-mysql -e MYSQL_ROOT_PASSWORD=password -p "127.0.0.1:13306:
 Run the tests and stop the database instances:
 
 ```shell
-hatch test
+hatch test --all
 docker stop sql-postgres sql-mysql
 docker rm sql-postgres sql-mysql
 ```

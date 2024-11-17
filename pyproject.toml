@@ -17,6 +17,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3.9",
 ]
+requires-python = ">=3.9"
 dependencies = [
     "mysql-connector-python>=8.0.25",
     "psycopg2-binary>=2.9.1",
@@ -33,6 +34,9 @@ path = "sql_judge_utils/__init__.py"
 include = [
     "/sql_judge_utils",
 ]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.9", "3.13"]
 
 [tool.black]
 line-length = 120
