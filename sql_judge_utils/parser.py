@@ -2,8 +2,8 @@ import re
 
 
 def get_queries(file_path: str, separator_prefix="-- Section"):
-    file_object = open(file_path)
-    file_content = file_object.read().strip()
+    with open(file_path) as file_object:
+        file_content = file_object.read().strip()
     sections = re.split(rf"{re.escape(separator_prefix)}\d+", file_content)
     sections = [s for s in sections if s]
     return sections

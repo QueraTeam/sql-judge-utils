@@ -65,18 +65,19 @@ class MysqlDatabase(Database):
         """
         if not os.path.exists(sql_file_path):
             raise Exception(f"SQL file not found: {sql_file_path}")
+        args = [
+            f"{arg_pair[0]}{arg_pair[1]}"
+            for arg_pair in [
+                ("--host=", self.host),
+                ("--port=", self.port),
+                ("--user=", self.username),
+                ("--password=", self.password),
+                ("--database=", self.db_name),
+            ]
+            if arg_pair[1]
+        ]
         with open(sql_file_path) as fp:
-            subprocess.run(
-                [
-                    "mysql",
-                    f"-h{self.host}",
-                    f"-P{self.port}",
-                    f"-u{self.username}",
-                    f"--password={self.password}",
-                    f"-D{self.db_name}",
-                ],
-                stdin=fp,
-            )
+            subprocess.run(["mysql", *args], stdin=fp)
         if delete_file:
             os.unlink(sql_file_path)
 
