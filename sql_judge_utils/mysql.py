@@ -1,7 +1,9 @@
+import os
+import subprocess
+from tempfile import NamedTemporaryFile
 from typing import Union
 
 import mysql.connector
-import sqlparse
 
 from sql_judge_utils.database import Database
 
@@ -47,16 +49,36 @@ class MysqlDatabase(Database):
             conn.close()
 
     def init(self, sql_string: str):
-        conn = self.connect_to_db()
-        try:
-            cursor = conn.cursor()
-            # In MySQL we can't execute multiple statements in one go.
-            for statement in sqlparse.split(sql_string):
-                cursor.execute(statement)
-            conn.commit()
-            cursor.close()
-        finally:
-            conn.close()
+        with NamedTemporaryFile() as fp:
+            fp.write(sql_string.encode("utf-8"))
+            fp.flush()
+            self.initf(fp.name)
+
+    def initf(self, sql_file_path, delete_file=False):
+        """
+        We rely on the external "mysql" command instead of using the Python package "mysql.connector".
+        The reason is that mysql.connector can only execute single queries at a time, not a script
+        with multiple queries. We tried using "sqlparse" to split the script into separate queries and
+        execute them individually, but it was not reliable because some queries need to be executed in
+        a single session. Additionally, for large scripts (e.g., 20MB), sqlparse execution was
+        extremely slow. Therefore, we have no choice but to depend on the "mysql" command.
+        """
+        if not os.path.exists(sql_file_path):
+            raise Exception(f"SQL file not found: {sql_file_path}")
+        with open(sql_file_path) as fp:
+            subprocess.run(
+                [
+                    "mysql",
+                    f"-h{self.host}",
+                    f"-P{self.port}",
+                    f"-u{self.username}",
+                    f"--password={self.password}",
+                    f"-D{self.db_name}",
+                ],
+                stdin=fp,
+            )
+        if delete_file:
+            os.unlink(sql_file_path)
 
     def run_query(self, sql_string) -> tuple[list[str], list[list]]:
         """

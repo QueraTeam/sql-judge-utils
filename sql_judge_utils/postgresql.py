@@ -1,3 +1,4 @@
+import os
 from typing import Union
 
 import psycopg2
@@ -58,6 +59,15 @@ class PostgresqlDatabase(Database):
             cursor.close()
         finally:
             conn.close()
+
+    def initf(self, sql_file_path, delete_file=False):
+        if not os.path.exists(sql_file_path):
+            raise Exception(f"SQL file not found: {sql_file_path}")
+        with open(sql_file_path) as f:
+            sql_string = f.read()
+        self.init(sql_string)
+        if delete_file:
+            os.unlink(sql_file_path)
 
     def run_query(self, sql_string) -> tuple[list[str], list[list]]:
         """
